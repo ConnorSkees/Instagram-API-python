@@ -868,30 +868,36 @@ class InstagramAPI:
         query = self.send_request('feed/timeline/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
         return query
 
-    def get_user_feed(self, username_id, maxid='', min_timestamp=None):
-        query = self.send_request('feed/user/%s/?max_id=%s&min_timestamp=%s&rank_token=%s&ranked_content=true'
-                                 % (username_id, maxid, min_timestamp, self.rank_token))
+    def get_user_feed(self, username_id, max_id='', min_timestamp=None):
+        query = self.send_request(
+            f'feed/user/{username_id}/'
+            f'?max_id={max_id}'
+            f'&min_timestamp={min_timestamp}'
+            f'&rank_token={self.rank_token}'
+            '&ranked_content=true'
+        )
         return query
 
-    def get_self_user_feed(self, maxid='', min_timestamp=None):
-        return self.get_user_feed(self.username_id, maxid, min_timestamp)
+    def get_self_user_feed(self, max_id='', min_timestamp=None):
+        return self.get_user_feed(self.username_id, max_id, min_timestamp)
 
-    def get_hashtag_feed(self, hashtag: str, maxid=''):
-        return self.send_request(f'feed/tag/{hashtag}/?max_id=' + str(maxid) + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+    def get_hashtag_feed(self, hashtag: str, max_id=None):
+        max_id = max_id or ''
+        return self.send_request(f'feed/tag/{hashtag}/?max_id={max_id}&rank_token={self.rank_token}&ranked_content=true&')
 
     def search_location(self, query):
-        location_feed = self.send_request('fbsearch/places/?rank_token=' + str(self.rank_token) + '&query=' + str(query))
+        location_feed = self.send_request(f'fbsearch/places/?rank_token={self.rank_token}&query={query}')
         return location_feed
 
-    def get_location_feed(self, location_id, maxid=''):
-        return self.send_request('feed/location/' + str(location_id) + '/?max_id=' + maxid + '&rank_token=' + self.rank_token + '&ranked_content=true&')
+    def get_location_feed(self, location_id, max_id=''):
+        return self.send_request(f'feed/location/{location_id}/?max_id={max_id}&rank_token={self.rank_token}&ranked_content=true&')
 
     def get_popular_feed(self):
-        popular_feed = self.send_request('feed/popular/?people_teaser_supported=1&rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        popular_feed = self.send_request(f'feed/popular/?people_teaser_supported=1&rank_token={self.rank_token}&ranked_content=true&')
         return popular_feed
 
-    def get_user_followings(self, username_id, maxid=''):
-        url = 'friendships/' + str(username_id) + '/following/?'
+    def get_user_followings(self, username_id, max_id=''):
+        url = f'friendships/{username_id}/following/?'
         query_string = {
             'ig_sig_key_version': self.SIG_KEY_VERSION,
             'rank_token': self.rank_token
@@ -904,11 +910,10 @@ class InstagramAPI:
     def get_self_users_following(self):
         return self.get_user_followings(self.username_id)
 
-    def get_user_followers(self, username_id, maxid=''):
-        if maxid == '':
-            return self.send_request('friendships/' + str(username_id) + '/followers/?rank_token=' + self.rank_token)
-        else:
-            return self.send_request('friendships/' + str(username_id) + '/followers/?rank_token=' + self.rank_token + '&max_id=' + str(maxid))
+    def get_user_followers(self, username_id, max_id=None):
+        if max_id is None:
+            return self.send_request(f'friendships/{username_id}/followers/?rank_token={self.rank_token}')
+        return self.send_request(f'friendships/{username_id}/followers/?rank_token={self.rank_token}&max_id={max_id}')
 
     def get_self_user_followers(self):
         return self.get_user_followers(self.username_id)
@@ -923,7 +928,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/like/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/like/', self.generate_signature(data))
 
     def unlike(self, media_id):
         data = json.dumps({
