@@ -157,8 +157,9 @@ class InstagramAPI:
         })
         return self.send_request('qe/expose/', self.generateSignature(data))
 
-    def logout(self):
-        logout = self.SendRequest('accounts/logout/')
+    def logout(self) -> None:
+        """Logout of Instagram account"""
+        logout = self.send_request('accounts/logout/')
 
     def uploadPhoto(self, photo, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
