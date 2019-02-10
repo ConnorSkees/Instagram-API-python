@@ -1037,10 +1037,13 @@ class InstagramAPI:
         body += u'--{boundary}--'.format(boundary=boundary)
         return body
 
-    def send_request(self, endpoint: str, post=None, login=False):
+    def send_request(self,
+                     endpoint: str,
+                     post=None,
+                     login=False) -> bool:
         verify = False  # don't show request warning
 
-        if not self.is_logged_in:
+        if not self.is_logged_in or login:
             raise NoLoginException("You are not currently logged in. "
                                    "Try running InstagramAPI.login()")
 
@@ -1059,10 +1062,11 @@ class InstagramAPI:
                     response = self.session.post(self.API_URL + endpoint, data=post, verify=verify)
                 else:
                     response = self.session.get(self.API_URL + endpoint, verify=verify)
-                break
             except Exception as e:
                 print('Except on send_request (wait 60 sec and resend): ' + str(e))
                 time.sleep(60)
+            else:
+                break
 
         if response.status_code == 200:
             self.last_response = response
