@@ -34,6 +34,8 @@ except ImportError:
 
 logging.basicConfig(filename='instagram_log.log', level=logging.INFO)
 
+__all__ = ["InstagramAPI"]
+
 class InstagramAPI:
     API_URL = 'https://i.instagram.com/api/v1/'
     DEVICE_SETTINGS = {
