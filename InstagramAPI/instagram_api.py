@@ -1215,13 +1215,13 @@ class InstagramAPI:
     def get_total_liked_media(self, scan_rate=1):
         next_id = ''
         liked_items = []
-        for x in range(0, scan_rate):
+        for _ in range(0, scan_rate):
             temp = self.get_liked_media(next_id)
             temp = self.last_json
             try:
                 next_id = temp["next_max_id"]
                 for item in temp["items"]:
                     liked_items.append(item)
-            except KeyError as e:
+            except KeyError:
                 break
         return liked_items
