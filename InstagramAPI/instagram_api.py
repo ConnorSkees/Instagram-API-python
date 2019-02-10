@@ -354,13 +354,13 @@ class InstagramAPI:
         albumUploadId = self.generate_upload_id()
 
         date = datetime.utcnow().isoformat()
-        childrenMetadata = []
+        children_metadata = []
         for item in media:
             itemInternalMetadata = item['internalMetadata']
             uploadId = itemInternalMetadata.get('upload_id', self.generate_upload_id())
             if item.get('type', '') == 'photo':
                 # Build this item's configuration.
-                photoConfig = {
+                photo_config = {
                     'date_time_original': date,
                     'scene_type': 1,
                     'disable_comments': False,
@@ -377,16 +377,16 @@ class InstagramAPI:
                 }
                 # This usertag per-file EXTERNAL metadata is only supported for PHOTOS!
                 if item.get('usertags', []):
-                    # NOTE: These usertags were validated in Timeline::upload_album.
-                    photoConfig['usertags'] = json.dumps({'in': item['usertags']})
+                    # NOTE: These usertags were validated in Timeline::uploadAlbum.
+                    photo_config['usertags'] = json.dumps({'in': item['usertags']})
 
-                childrenMetadata.append(photoConfig)
+                children_metadata.append(photo_config)
             if item.get('type', '') == 'video':
                 # Get all of the INTERNAL per-VIDEO metadata.
-                videoDetails = itemInternalMetadata.get('video_details', {})
+                video_details = itemInternalMetadata.get('video_details', {})
                 # Build this item's configuration.
-                videoConfig = {
-                    'length': videoDetails.get('duration', 1.0),
+                video_config = {
+                    'length': video_details.get('duration', 1.0),
                     'date_time_original': date,
                     'scene_type': 1,
                     'poster_frame_index': 0,
@@ -396,9 +396,9 @@ class InstagramAPI:
                     'source_type': 'library',
                     'geotag_enabled': False,
                     'edits': {
-                        'length': videoDetails.get('duration', 1.0),
+                        'length': video_details.get('duration', 1.0),
                         'cinema': 'unsupported',
-                        'original_length': videoDetails.get('duration', 1.0),
+                        'original_length': video_details.get('duration', 1.0),
                         'source_type': 'library',
                         'start_time': 0,
                         'camera_position': 'unknown',
@@ -406,7 +406,7 @@ class InstagramAPI:
                     }
                 }
 
-                childrenMetadata.append(videoConfig)
+                children_metadata.append(video_config)
         # Build the request...
         data = {
             '_csrftoken': self.token,
@@ -414,7 +414,7 @@ class InstagramAPI:
             '_uuid': self.uuid,
             'client_sidecar_id': albumUploadId,
             'caption': caption_text,
-            'children_metadata': childrenMetadata
+            'children_metadata': children_metadata
         }
         self.send_request(endpoint, self.generate_signature(json.dumps(data)))
         response = self.last_response
@@ -425,11 +425,8 @@ class InstagramAPI:
         else:
             print("Request return " + str(response.status_code) + " error!")
             # for debugging
-            try:
-                self.last_response = response
-                self.last_json = json.loads(response.text)
-            except:
-                pass
+            self.last_response = response
+            self.last_json = json.loads(response.text)
             return False
 
     def direct_message(self, text, recipients):
