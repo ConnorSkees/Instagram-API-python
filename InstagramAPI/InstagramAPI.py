@@ -241,7 +241,7 @@ class InstagramAPI:
                     self.expose()
         return False
 
-    def uploadAlbum(self, media, caption=None, upload_id=None):
+    def upload_album(self, media, caption=None, upload_id=None):
         if not media:
             raise Exception("List of media to upload can't be empty.")
 
@@ -287,8 +287,8 @@ class InstagramAPI:
 
             elif item.get('type', '') == 'video':
                 # Attempt to upload the video data.
-                self.uploadVideo(item['file'], item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
-                # $itemInternalMetadata = $this->ig->internal->uploadVideo(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
+                self.upload_video(item['file'], item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
+                # $itemInternalMetadata = $this->ig->internal->upload_video(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
                 # Attempt to upload the thumbnail, associated with our video's ID.
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->uploadPhotoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
                 pass
@@ -353,7 +353,7 @@ class InstagramAPI:
                 }
                 # This usertag per-file EXTERNAL metadata is only supported for PHOTOS!
                 if item.get('usertags', []):
-                    # NOTE: These usertags were validated in Timeline::uploadAlbum.
+                    # NOTE: These usertags were validated in Timeline::upload_album.
                     photoConfig['usertags'] = json.dumps({'in': item['usertags']})
 
                 childrenMetadata.append(photoConfig)
