@@ -85,20 +85,25 @@ class InstagramAPI:
 
         if proxy is not None:
             print('Set proxy!')
-            proxies = {'http': proxy, 'https': proxy}
+            proxies = {
+                'http': proxy,
+                'https': proxy
+            }
             self.session.proxies.update(proxies)
 
     def login(self, force: bool = False):
         if not self.isLoggedIn or force:
             if self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True):
 
-                data = {'phone_id': self.generateUUID(True),
-                        '_csrftoken': self.LastResponse.cookies['csrftoken'],
-                        'username': self.username,
-                        'guid': self.uuid,
-                        'device_id': self.device_id,
-                        'password': self.password,
-                        'login_attempt_count': '0'}
+                data = {
+                    'phone_id': self.generateUUID(True),
+                    '_csrftoken': self.LastResponse.cookies['csrftoken'],
+                    'username': self.username,
+                    'guid': self.uuid,
+                    'device_id': self.device_id,
+                    'password': self.password,
+                    'login_attempt_count': '0'
+                }
 
                 if self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True):
                     self.isLoggedIn = True
@@ -178,10 +183,12 @@ class InstagramAPI:
     def upload_video(self, video, thumbnail, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
-        data = {'upload_id': upload_id,
-                '_csrftoken': self.token,
-                'media_type': '2',
-                '_uuid': self.uuid}
+        data = {
+            'upload_id': upload_id,
+            '_csrftoken': self.token,
+            'media_type': '2',
+            '_uuid': self.uuid
+        }
         if is_sidecar:
             data['is_sidecar'] = '1'
         m = MultipartEncoder(data, boundary=self.uuid)
@@ -232,7 +239,10 @@ class InstagramAPI:
                 content_range = "bytes {start}-{end}/{lenVideo}".format(start=start, end=(end - 1),
                                                                         lenVideo=len(videoData)).encode('utf-8')
 
-                self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
+                self.session.headers.update({
+                    'Content-Length': str(end - start),
+                    'Content-Range': content_range
+                })
                 response = self.session.post(upload_url, data=videoData[start:start + length])
             self.session.headers = headers
 
@@ -790,8 +800,10 @@ class InstagramAPI:
 
     def getUserFollowings(self, usernameId, maxid=''):
         url = 'friendships/' + str(usernameId) + '/following/?'
-        query_string = {'ig_sig_key_version': self.SIG_KEY_VERSION,
-                        'rank_token': self.rank_token}
+        query_string = {
+            'ig_sig_key_version': self.SIG_KEY_VERSION,
+            'rank_token': self.rank_token
+        }
         if maxid:
             query_string['max_id'] = maxid
         if sys.version_info.major == 3:
