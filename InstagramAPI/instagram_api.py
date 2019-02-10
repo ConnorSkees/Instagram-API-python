@@ -11,6 +11,7 @@ import logging
 import math
 import os
 import time
+from typing import Any, Dict, List
 import urllib.parse
 import uuid
 
@@ -20,6 +21,7 @@ from requests_toolbelt import MultipartEncoder
 
 from .ImageUtils import getImageSize
 from .exceptions import (
+    AlbumLengthError,
     SentryBlockException,
     NoLoginException
 )
@@ -268,7 +270,42 @@ class InstagramAPI:
                     self.expose()
         return False
 
-    def upload_album(self, media, caption=None, upload_id=None):
+    def upload_album(self, media: List[Dict[str, Any]], caption: str = None):
+        """
+        Upload album of photos/videos
+
+        Args:
+            media: List[Dict[str, Any]] of photos/videos to post
+            caption: str Album caption
+
+        Example media:
+        media = [
+            {
+                'type': 'photo',
+                'path': '/path/to/your/photo.jpg',
+                'usertags': [
+                    {
+                        'position': [0.5, 0.5],
+                        'user_id': '123456789',
+                    },
+                ]
+            },
+            {
+                'type': 'photo',
+                'path': '/path/to/your/photo.png',
+            },
+            {
+               'type'     : 'video',
+               'path'     : '/path/to/your/video.mp4',
+               'thumbnail': '/path/to/your/thumbnail.jpg'
+            }
+        ]
+        """
+        raise NotImplementedError("This method is currently unfinished")
+
+        image_types = (".jpg", ".jpeg", ".gif", ".png", ".bmp")
+        video_types = (".mov", ".mp4")
+
         if not media:
             raise Exception("List of media to upload can't be empty.")
 
@@ -276,29 +313,32 @@ class InstagramAPI:
             raise Exception('Instagram requires that albums contain 2-10 items.'
                             f' You tried to submit {len(media)}.')
 
-        # Figure out the media file details for ALL media in the album.
-        # NOTE: We do this first, since it validates whether the media files are
-        # valid and lets us avoid wasting time uploading totally invalid albums!
         for idx, item in enumerate(media):
-            if not item.get('file', '') or item.get('tipe', ''):
-                raise Exception(f'Media at index "{idx}" does not have the required "file" and "type" keys')
+            item_type = item.get('type', None)
+            item_path = item.get('path', None)
 
+            if item_path is None:
+                raise AttributeError(f'Media path is unspecified at index {idx}'
+                                     'Add a \'path\' key to resolve.')
+
+            item_path = item_path.lower()
 
             # $itemInternalMetadata = new InternalMetadata();
             # If usertags are provided, verify that the entries are valid.
-            if item.get('usertags', []):
+            if item.get('usertags', None) is not None:
                 self.throw_if_invalid_usertags(item['usertags'])
 
             # Pre-process media details and throw if not allowed on Instagram.
-            if item.get('type', '') == 'photo':
+            if item_path.endswith(image_types):
+                item['type'] = 'photo'
+                item['file'] = item_path
                 # Determine the photo details.
                 # $itemInternalMetadata->setPhotoDetails(Constants::FEED_TIMELINE_ALBUM, $item['file']);
-                pass
 
-            elif item.get('type', '') == 'video':
+            elif item_path.endswith(video_types):
+                item_type = 'video'
                 # Determine the video details.
                 # $itemInternalMetadata->setVideoDetails(Constants::FEED_TIMELINE_ALBUM, $item['file']);
-                pass
 
             else:
                 raise Exception(f'Unsupported album media type {item_type}')
@@ -306,15 +346,13 @@ class InstagramAPI:
             itemInternalMetadata = {}
             item['internalMetadata'] = itemInternalMetadata
 
-        # Perform all media file uploads.
-        for idx, item in enumerate(media):
             itemInternalMetadata = item['internalMetadata']
             item_upload_id = self.generate_upload_id()
-            if item.get('type', '') == 'photo':
+            if item_type == 'photo':
                 self.upload_photo(item['file'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
 
-            elif item.get('type', '') == 'video':
+            elif item_type == 'video':
                 # Attempt to upload the video data.
                 self.upload_video(item['file'], item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
                 # $itemInternalMetadata = $this->ig->internal->upload_video(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
