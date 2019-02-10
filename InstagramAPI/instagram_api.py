@@ -10,9 +10,7 @@ import json
 import logging
 import math
 import os
-import sys
 import time
-import urllib
 import urllib.parse
 import uuid
 
@@ -821,10 +819,7 @@ class InstagramAPI:
         }
         if maxid:
             query_string['max_id'] = maxid
-        if sys.version_info.major == 3:
-            url += urllib.parse.urlencode(query_string)
-        else:
-            url += urllib.urlencode(query_string)
+        url += urllib.parse.urlencode(query_string)
         return self.send_request(url)
 
     def get_self_users_following(self):
