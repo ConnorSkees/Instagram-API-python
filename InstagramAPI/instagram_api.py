@@ -255,8 +255,7 @@ class InstagramAPI:
                 else:
                     end = (i + 1) * request_size
                 length = last_request_extra if i == 3 else request_size
-                content_range = "bytes {start}-{end}/{len_video}".format(start=start, end=(end - 1),
-                                                                        len_video=len(video_data)).encode('utf-8')
+                content_range = f"bytes {start}-{end - 1}/{len(video_data)}"
 
                 self.session.headers.update({
                     'Content-Length': str(end - start),
@@ -275,14 +274,16 @@ class InstagramAPI:
             raise Exception("List of media to upload can't be empty.")
 
         if len(media) < 2 or len(media) > 10:
-            raise Exception('Instagram requires that albums contain 2-10 items. You tried to submit {}.'.format(len(media)))
+            raise Exception('Instagram requires that albums contain 2-10 items.'
+                            f' You tried to submit {len(media)}.')
 
         # Figure out the media file details for ALL media in the album.
         # NOTE: We do this first, since it validates whether the media files are
         # valid and lets us avoid wasting time uploading totally invalid albums!
         for idx, item in enumerate(media):
             if not item.get('file', '') or item.get('tipe', ''):
-                raise Exception('Media at index "{}" does not have the required "file" and "type" keys.'.format(idx))
+                raise Exception(f'Media at index "{idx}" does not have the required "file" and "type" keys')
+
 
             # $itemInternalMetadata = new InternalMetadata();
             # If usertags are provided, verify that the entries are valid.
@@ -301,7 +302,7 @@ class InstagramAPI:
                 pass
 
             else:
-                raise Exception('Unsupported album media type "{}".'.format(item['type']))
+                raise Exception(f'Unsupported album media type {item_type}')
 
             itemInternalMetadata = {}
             item['internalMetadata'] = itemInternalMetadata
