@@ -17,8 +17,8 @@ import urllib.parse
 import uuid
 
 import requests
-from requests_toolbelt import MultipartEncoder
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests_toolbelt import MultipartEncoder
 
 from .ImageUtils import getImageSize
 from .exceptions import SentryBlockException
@@ -69,7 +69,7 @@ class InstagramAPI:
         self.setUser(username, password)
         self.isLoggedIn = False
         self.LastResponse = None
-        self.s = requests.Session()
+        self.session= requests.Session()
 
     def setUser(self, username: str, password: str):
         self.username = username
@@ -86,7 +86,7 @@ class InstagramAPI:
         if proxy is not None:
             print('Set proxy!')
             proxies = {'http': proxy, 'https': proxy}
-            self.s.proxies.update(proxies)
+            self.session.proxies.update(proxies)
 
     def login(self, force: bool = False):
         if (not self.isLoggedIn or force):
@@ -159,7 +159,7 @@ class InstagramAPI:
         if is_sidecar:
             data['is_sidecar'] = '1'
         m = MultipartEncoder(data, boundary=self.uuid)
-        self.s.headers.update({
+        self.session.headers.update({
             'X-IG-Capabilities': '3Q4=',
             'X-IG-Connection-Type': 'WIFI',
             'Cookie2': '$Version=1',
@@ -169,7 +169,7 @@ class InstagramAPI:
             'Connection': 'close',
             'User-Agent': self.USER_AGENT
         })
-        response = self.s.post(self.API_URL + "upload/photo/", data=m.to_string())
+        response = self.session.post(self.API_URL + "upload/photo/", data=m.to_string())
         if response.status_code == 200:
             if self.configure(upload_id, photo, caption):
                 self.expose()
@@ -185,7 +185,7 @@ class InstagramAPI:
         if is_sidecar:
             data['is_sidecar'] = '1'
         m = MultipartEncoder(data, boundary=self.uuid)
-        self.s.headers.update({
+        self.session.headers.update({
             'X-IG-Capabilities': '3Q4=',
             'X-IG-Connection-Type': 'WIFI',
             'Host': 'i.instagram.com',
@@ -196,7 +196,7 @@ class InstagramAPI:
             'Connection': 'keep-alive',
             'User-Agent': self.USER_AGENT
         })
-        response = self.s.post(self.API_URL + "upload/video/", data=m.to_string())
+        response = self.session.post(self.API_URL + "upload/video/", data=m.to_string())
         if response.status_code == 200:
             body = json.loads(response.text)
             upload_url = body['video_upload_urls'][3]['url']
@@ -207,8 +207,8 @@ class InstagramAPI:
             request_size = int(math.floor(len(videoData) / 4))
             lastRequestExtra = (len(videoData) - (request_size * 3))
 
-            headers = copy.deepcopy(self.s.headers)
-            self.s.headers.update({
+            headers = copy.deepcopy(self.session.headers)
+            self.session.headers.update({
                 'X-IG-Capabilities': '3Q4=',
                 'X-IG-Connection-Type': 'WIFI',
                 'Cookie2': '$Version=1',
@@ -232,9 +232,9 @@ class InstagramAPI:
                 content_range = "bytes {start}-{end}/{lenVideo}".format(start=start, end=(end - 1),
                                                                         lenVideo=len(videoData)).encode('utf-8')
 
-                self.s.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
-                response = self.s.post(upload_url, data=videoData[start:start + length])
-            self.s.headers = headers
+                self.session.headers.update({'Content-Length': str(end - start), 'Content-Range': content_range, })
+                response = self.session.post(upload_url, data=videoData[start:start + length])
+            self.session.headers = headers
 
             if response.status_code == 200:
                 if self.configureVideo(upload_id, video, thumbnail, caption):
@@ -437,7 +437,7 @@ class InstagramAPI:
             },
         ]
         data = self.buildBody(bodies,boundary)
-        self.s.headers.update ({
+        self.session.headers.update ({
             'User-Agent' : self.USER_AGENT,
             'Proxy-Connection' : 'keep-alive',
             'Connection': 'keep-alive',
@@ -446,7 +446,7 @@ class InstagramAPI:
             'Accept-Language': 'en-en',
         })
         #self.SendRequest(endpoint,post=data) #overwrites 'Content-type' header and boundary is missed
-        response = self.s.post(self.API_URL + endpoint, data=data)
+        response = self.session.post(self.API_URL + endpoint, data=data)
 
         if response.status_code == 200:
             self.LastResponse = response
@@ -496,7 +496,7 @@ class InstagramAPI:
             },
         ]
         data = self.buildBody(bodies, boundary)
-        self.s.headers.update({
+        self.session.headers.update({
             'User-Agent': self.USER_AGENT,
             'Proxy-Connection': 'keep-alive',
             'Connection': 'keep-alive',
@@ -505,7 +505,7 @@ class InstagramAPI:
             'Accept-Language': 'en-en'
         })
         # self.SendRequest(endpoint,post=data) #overwrites 'Content-type' header and boundary is missed
-        response = self.s.post(self.API_URL + endpoint, data=data)
+        response = self.session.post(self.API_URL + endpoint, data=data)
 
         if response.status_code == 200:
             self.LastResponse = response
@@ -1025,7 +1025,7 @@ class InstagramAPI:
         if (not self.isLoggedIn and not login):
             raise Exception("Not logged in!\n")
 
-        self.s.headers.update({
+        self.session.headers.update({
             'Connection': 'close',
             'Accept': '*/*',
             'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -1037,9 +1037,9 @@ class InstagramAPI:
         while True:
             try:
                 if (post is not None):
-                    response = self.s.post(self.API_URL + endpoint, data=post, verify=verify)
+                    response = self.session.post(self.API_URL + endpoint, data=post, verify=verify)
                 else:
-                    response = self.s.get(self.API_URL + endpoint, verify=verify)
+                    response = self.session.get(self.API_URL + endpoint, verify=verify)
                 break
             except Exception as e:
                 print('Except on SendRequest (wait 60 sec and resend): ' + str(e))
