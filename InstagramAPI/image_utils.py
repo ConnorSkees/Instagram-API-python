@@ -6,18 +6,18 @@ import imghdr
 
 
 def get_image_size(fname):
-    with open(fname, 'rb') as fhandle:
+    with open(path_to_file, 'rb') as fhandle:
         head = fhandle.read(24)
         if len(head) != 24:
             raise RuntimeError("Invalid Header")
-        if imghdr.what(fname) == 'png':
+        if imghdr.what(path_to_file) == 'png':
             check = struct.unpack('>i', head[4:8])[0]
             if check != 0x0d0a1a0a:
                 raise RuntimeError("PNG: Invalid check")
             width, height = struct.unpack('>ii', head[16:24])
-        elif imghdr.what(fname) == 'gif':
+        elif imghdr.what(path_to_file) == 'gif':
             width, height = struct.unpack('<HH', head[6:10])
-        elif imghdr.what(fname) == 'jpeg':
+        elif imghdr.what(path_to_file) == 'jpeg':
             fhandle.seek(0)  # Read 0xff next
             size = 2
             ftype = 0
