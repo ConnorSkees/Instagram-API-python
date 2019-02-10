@@ -39,7 +39,16 @@ class InstagramAPI:
         'android_version': 18,
         'android_release': '4.3'
     }
-    USER_AGENT = 'Instagram 10.26.0 Android ({android_version}/{android_release}; 320dpi; 720x1280; {manufacturer}; {model}; armani; qcom; en_US)'.format(**DEVICE_SETTINGS)
+    USER_AGENT = (
+        'Instagram 10.26.0 Android ({android_version}/{android_release}; '
+        '320dpi; '
+        '720x1280; '
+        '{manufacturer}; '
+        '{model}; '
+        'armani; '
+        'qcom; '
+        'en_US)'
+    ).format(**DEVICE_SETTINGS)
     IG_SIG_KEY = '4f8732eb9ba7d1c8e8897a75d6474d4eb3f5279137431b2aafb71fafe2abe178'
     with open("./EXPERIMENTS.txt", mode='r') as experiments:
         EXPERIMENTS = experiments.read()
@@ -74,7 +83,7 @@ class InstagramAPI:
     def setUser(self, username: str, password: str):
         self.username = username
         self.password = password
-        self.uuid = self.generateUUID(True)
+        self.uuid = self.generate_UUID(True)
 
     def setProxy(self, proxy=None):
         """
@@ -93,10 +102,10 @@ class InstagramAPI:
 
     def login(self, force: bool = False):
         if not self.isLoggedIn or force:
-            if self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True):
+            if self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(False), None, True):
 
                 data = {
-                    'phone_id': self.generateUUID(True),
+                    'phone_id': self.generate_UUID(True),
                     '_csrftoken': self.LastResponse.cookies['csrftoken'],
                     'username': self.username,
                     'guid': self.uuid,
@@ -965,7 +974,7 @@ class InstagramAPI:
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
         return 'android-' + m.hexdigest()[:16]
 
-    def generateUUID(self, type):
+    def generate_UUID(self, type):
         generated_uuid = str(uuid.uuid4())
         if type:
             return generated_uuid
