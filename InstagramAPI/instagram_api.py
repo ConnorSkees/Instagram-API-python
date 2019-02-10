@@ -104,9 +104,9 @@ class InstagramAPI:
 
     def login(self, force: bool = False):
         if not self.is_logged_in or force:
-            if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(False), None, True):
+            if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(without_dashes=False), None, True):
                 data = {
-                    'phone_id': self.generate_UUID(True),
+                    'phone_id': self.generate_UUID(without_dashes=True),
                     '_csrftoken': self.last_response.cookies['csrftoken'],
                     'username': self.username,
                     'guid': self.uuid,
