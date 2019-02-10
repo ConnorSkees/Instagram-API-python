@@ -297,7 +297,6 @@ class InstagramAPI:
         Example media:
         media = [
             {
-                'type': 'photo',
                 'path': '/path/to/your/photo.jpg',
                 'usertags': [
                     {
@@ -307,11 +306,9 @@ class InstagramAPI:
                 ]
             },
             {
-                'type': 'photo',
                 'path': '/path/to/your/photo.png',
             },
             {
-               'type'     : 'video',
                'path'     : '/path/to/your/video.mp4',
                'thumbnail': '/path/to/your/thumbnail.jpg'
             }
@@ -345,8 +342,7 @@ class InstagramAPI:
 
             # Pre-process media details and throw if not allowed on Instagram.
             if item_path.endswith(image_types):
-                item['type'] = 'photo'
-                item['file'] = item_path
+                item_type = 'photo'
                 # Determine the photo details.
                 # $itemInternalMetadata->setPhotoDetails(Constants::FEED_TIMELINE_ALBUM, $item['file']);
 
@@ -358,18 +354,16 @@ class InstagramAPI:
             else:
                 raise Exception(f'Unsupported album media type {item_type}')
 
-            itemInternalMetadata = {}
-            item['internalMetadata'] = itemInternalMetadata
+            item['internalMetadata'] = {}
 
-            itemInternalMetadata = item['internalMetadata']
             item_upload_id = self.generate_upload_id()
             if item_type == 'photo':
-                self.upload_photo(item['file'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
+                self.upload_photo(item_path, caption=caption, is_sidecar=True, upload_id=item_upload_id)
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
 
             elif item_type == 'video':
                 # Attempt to upload the video data.
-                self.upload_video(item['file'], item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
+                self.upload_video(item_path, item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
                 # $itemInternalMetadata = $this->ig->internal->upload_video(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
                 # Attempt to upload the thumbnail, associated with our video's ID.
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
