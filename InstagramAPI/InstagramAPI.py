@@ -78,7 +78,7 @@ class InstagramAPI:
 
     def setProxy(self, proxy=None):
         """
-        Set proxy for all requests::
+        Set proxy for all requests
 
         Proxy format - user:password@ip:port
         """
@@ -89,8 +89,8 @@ class InstagramAPI:
             self.session.proxies.update(proxies)
 
     def login(self, force: bool = False):
-        if (not self.isLoggedIn or force):
-            if (self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True)):
+        if not self.isLoggedIn or force:
+            if self.SendRequest('si/fetch_headers/?challenge_type=signup&guid=' + self.generateUUID(False), None, True):
 
                 data = {'phone_id': self.generateUUID(True),
                         '_csrftoken': self.LastResponse.cookies['csrftoken'],
@@ -100,7 +100,7 @@ class InstagramAPI:
                         'password': self.password,
                         'login_attempt_count': '0'}
 
-                if (self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True)):
+                if self.SendRequest('accounts/login/', self.generateSignature(json.dumps(data)), True):
                     self.isLoggedIn = True
                     self.username_id = self.LastJson["logged_in_user"]["pk"]
                     self.rank_token = "%s_%s" % (self.username_id, self.uuid)
@@ -955,7 +955,7 @@ class InstagramAPI:
 
     def generateUUID(self, type):
         generated_uuid = str(uuid.uuid4())
-        if (type):
+        if type:
             return generated_uuid
         else:
             return generated_uuid.replace('-', '')
@@ -1022,7 +1022,7 @@ class InstagramAPI:
     def SendRequest(self, endpoint, post=None, login=False):
         verify = False  # don't show request warning
 
-        if (not self.isLoggedIn and not login):
+        if not self.isLoggedIn and not login:
             raise Exception("Not logged in!\n")
 
         self.session.headers.update({
@@ -1036,7 +1036,7 @@ class InstagramAPI:
 
         while True:
             try:
-                if (post is not None):
+                if post is not None:
                     response = self.session.post(self.API_URL + endpoint, data=post, verify=verify)
                 else:
                     response = self.session.get(self.API_URL + endpoint, verify=verify)
