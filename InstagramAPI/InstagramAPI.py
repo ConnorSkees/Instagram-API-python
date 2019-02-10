@@ -816,42 +816,52 @@ class InstagramAPI:
         return self.SendRequest('friendships/pending?')
 
     def like(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/like/', self.generateSignature(data))
 
     def unlike(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/unlike/', self.generateSignature(data))
 
     def save(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/save/', self.generateSignature(data))
 
     def unsave(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/unsave/', self.generateSignature(data))
 
     def getMediaComments(self, mediaId, max_id=''):
         return self.SendRequest('media/' + mediaId + '/comments/?max_id=' + max_id)
 
     def setNameAndPhone(self, name='', phone=''):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'first_name': name,
-                           'phone_number': phone,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'first_name': name,
+            'phone_number': phone,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('accounts/set_phone_and_name/', self.generateSignature(data))
 
     def getDirectShare(self):
@@ -863,55 +873,65 @@ class InstagramAPI:
 
     def approve(self, userId):
         data = json.dumps({
-        '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
-        'user_id'       : userId,
-        '_csrftoken'    : self.token
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
         })
         return self.SendRequest('friendships/approve/'+ str(userId) + '/', self.generateSignature(data))
 
     def ignore(self, userId):
         data = json.dumps({
-        '_uuid'         : self.uuid,
-        '_uid'          : self.username_id,
-        'user_id'       : userId,
-        '_csrftoken'    : self.token
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
         })
         return self.SendRequest('friendships/ignore/'+ str(userId) + '/', self.generateSignature(data))
 
     def follow(self, userId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'user_id': userId,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('friendships/create/' + str(userId) + '/', self.generateSignature(data))
 
     def unfollow(self, userId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'user_id': userId,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('friendships/destroy/' + str(userId) + '/', self.generateSignature(data))
 
     def block(self, userId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'user_id': userId,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('friendships/block/' + str(userId) + '/', self.generateSignature(data))
 
     def unblock(self, userId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'user_id': userId,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('friendships/unblock/' + str(userId) + '/', self.generateSignature(data))
 
     def userFriendship(self, userId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'user_id': userId,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'user_id': userId,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('friendships/show/' + str(userId) + '/', self.generateSignature(data))
 
     def getLikedMedia(self, maxid=''):
@@ -944,34 +964,42 @@ class InstagramAPI:
         return str(calendar.timegm(datetime.utcnow().utctimetuple()))
 
     def createBroadcast(self, previewWidth=1080, previewHeight=1920, broadcastMessage=''):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'preview_height': previewHeight,
-                           'preview_width': previewWidth,
-                           'broadcast_message': broadcastMessage,
-                           'broadcast_type': 'RTMP',
-                           'internal_only': 0,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'preview_height': previewHeight,
+            'preview_width': previewWidth,
+            'broadcast_message': broadcastMessage,
+            'broadcast_type': 'RTMP',
+            'internal_only': 0,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('live/create/', self.generateSignature(data))
 
     def startBroadcast(self, broadcastId, sendNotification=False):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           'should_send_notifications': int(sendNotification),
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            'should_send_notifications': int(sendNotification),
+            '_csrftoken': self.token
+        })
         return self.SendRequest('live/' + str(broadcastId) + '/start', self.generateSignature(data))
 
     def stopBroadcast(self, broadcastId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('live/' + str(broadcastId) + '/end_broadcast/', self.generateSignature(data))
 
     def addBroadcastToLive(self, broadcastId):
         # broadcast has to be ended first!
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('live/' + str(broadcastId) + '/add_to_post_live/', self.generateSignature(data))
 
     def buildBody(self, bodies, boundary):
@@ -997,12 +1025,14 @@ class InstagramAPI:
         if (not self.isLoggedIn and not login):
             raise Exception("Not logged in!\n")
 
-        self.s.headers.update({'Connection': 'close',
-                               'Accept': '*/*',
-                               'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                               'Cookie2': '$Version=1',
-                               'Accept-Language': 'en-US',
-                               'User-Agent': self.USER_AGENT})
+        self.s.headers.update({
+            'Connection': 'close',
+            'Accept': '*/*',
+            'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'User-Agent': self.USER_AGENT
+        })
 
         while True:
             try:
