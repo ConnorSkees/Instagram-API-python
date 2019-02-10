@@ -310,7 +310,7 @@ class InstagramAPI:
                 'path': '/path/to/your/photo.png',
             },
             {
-               'path'     : '/path/to/your/video.mp4',
+               'path': '/path/to/your/video.mp4',
                'thumbnail': '/path/to/your/thumbnail.jpg'
             }
         ]
@@ -349,6 +349,7 @@ class InstagramAPI:
 
             elif item_path.endswith(video_types):
                 item_type = 'video'
+                thumbnail = item.get('thumbnail', None)
                 # Determine the video details.
                 # $itemInternalMetadata->setVideoDetails(Constants::FEED_TIMELINE_ALBUM, $item['file']);
 
@@ -358,21 +359,33 @@ class InstagramAPI:
                 )
 
             item_upload_id = self.generate_upload_id()
+            item['internalMetadata'] = {'upload_id': item_upload_id}
+
             if item_type == 'photo':
-                self.upload_photo(item_path, caption=caption, is_sidecar=True, upload_id=item_upload_id)
+                self.upload_photo(
+                    item_path,
+                    caption=caption,
+                    is_sidecar=True,
+                    upload_id=item_upload_id
+                )
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
 
             elif item_type == 'video':
                 # Attempt to upload the video data.
-                self.upload_video(item_path, item['thumbnail'], caption=caption, is_sidecar=True, upload_id=item_upload_id)
+                self.upload_video(
+                    item_path,
+                    thumbnail,
+                    caption=caption,
+                    is_sidecar=True,
+                    upload_id=item_upload_id
+                )
                 # $itemInternalMetadata = $this->ig->internal->upload_video(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
                 # Attempt to upload the thumbnail, associated with our video's ID.
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
                 pass
-            item['internalMetadata']['upload_id'] = item_upload_id
 
-        albumInternalMetadata = {}
-        return self.configure_timeline_album(media, albumInternalMetadata, caption_text=caption)
+        album_internal_metadata = {}
+        return self.configure_timeline_album(media, album_internal_metadata, caption_text=caption)
 
     def throw_if_invalid_usertags(self, usertags):
         """
