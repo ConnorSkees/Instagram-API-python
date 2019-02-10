@@ -85,20 +85,18 @@ class InstagramAPI:
         self.password = password
         self.uuid = self.generate_UUID(True)
 
-    def setProxy(self, proxy=None):
+    def set_proxy(self, proxy: str) -> None:
         """
         Set proxy for all requests
 
         Proxy format - user:password@ip:port
         """
-
-        if proxy is not None:
-            print('Set proxy!')
-            proxies = {
-                'http': proxy,
-                'https': proxy
-            }
-            self.session.proxies.update(proxies)
+        print('Set proxy!')
+        proxies = {
+            'http': proxy,
+            'https': proxy
+        }
+        self.session.proxies.update(proxies)
 
     def login(self, force: bool = False):
         if not self.isLoggedIn or force:
