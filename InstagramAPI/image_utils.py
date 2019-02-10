@@ -6,7 +6,10 @@ import imghdr
 
 from .exceptions import UnsupportedMediaType
 
-def get_image_size(fname):
+def get_image_size(path_to_file: str):
+    """
+    Get the size in bytes of an image file
+    """
     with open(path_to_file, 'rb') as fhandle:
         head = fhandle.read(24)
         if len(head) != 24:
