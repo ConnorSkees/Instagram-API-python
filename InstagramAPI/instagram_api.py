@@ -79,6 +79,7 @@ class InstagramAPI:
             debug: bool = False,
             IGDataPath=None
         ) -> None:
+
         m = hashlib.md5()
         m.update(username.encode('utf-8') + password.encode('utf-8'))
         self.device_id = self.generate_device_id(m.hexdigest())
@@ -365,6 +366,9 @@ class InstagramAPI:
         return self.configure_timeline_album(media, albumInternalMetadata, caption_text=caption)
 
     def throw_if_invalid_usertags(self, usertags):
+        """
+        Valid usertags (tagging other people in images and videos)
+        """
         for user_position in usertags:
             # Verify this usertag entry, ensuring that the entry is format
             # ['position'=>[0.0,1.0],'user_id'=>'123'] and nothing else.
@@ -465,12 +469,11 @@ class InstagramAPI:
             self.last_response = response
             self.last_json = json.loads(response.text)
             return True
-        else:
-            print("Request return " + str(response.status_code) + " error!")
-            # for debugging
-            self.last_response = response
-            self.last_json = json.loads(response.text)
-            return False
+        print("Request return " + str(response.status_code) + " error!")
+        # for debugging
+        self.last_response = response
+        self.last_json = json.loads(response.text)
+        return False
 
     def direct_message(self, text, recipients):
         if type(recipients) != type([]):
