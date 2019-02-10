@@ -21,7 +21,6 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests_toolbelt import MultipartEncoder
 
-from .ImageUtils import getImageSize
 from .exceptions import (
     AlbumLengthError,
     SentryBlockException,

@@ -1,3 +1,6 @@
+"""
+Utility functions for working with images
+"""
 import struct
 import imghdr
 
