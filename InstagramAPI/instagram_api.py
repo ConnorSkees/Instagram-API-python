@@ -1,5 +1,8 @@
 ﻿#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""
+Instagram API bindings written in python 3
+"""
+
 
 import calendar
 import copy
