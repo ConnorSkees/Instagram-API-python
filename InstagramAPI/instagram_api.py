@@ -503,7 +503,7 @@ class InstagramAPI:
             {
                 'type': 'form-data',
                 'name': 'recipient_users',
-                'data': '[["{}"]]'.format(recipient_users),
+                'data': f'[["{recipient_users}"]]'
             },
             {
                 'type': 'form-data',
