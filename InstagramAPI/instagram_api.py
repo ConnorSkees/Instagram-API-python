@@ -216,6 +216,17 @@ class InstagramAPI:
             upload_id: Optional[str] = None,
             is_sidecar: Optional[bool] = None
         ) -> None:
+        """
+        Upload video to Instagram
+
+        Args:
+            path_to_video: str Path to video file
+            path_to_thumbnail: str Path to thumbnail image file
+            caption: str Post caption
+            upload_id:
+            is_sidecar: bool Is part of carousel/a post with multiple videos
+                             or photos
+        """
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
 
