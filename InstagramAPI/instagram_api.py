@@ -964,15 +964,9 @@ class InstagramAPI:
     def get_liked_media(self, maxid=''):
         return self.send_request('feed/liked/?max_id=' + str(maxid))
 
-    def generate_signature(self, data, skip_quote=False):
-        if not skip_quote:
-            try:
-                parsedData = urllib.parse.quote(data)
-            except AttributeError:
-                parsedData = urllib.quote(data)
-        else:
-            parsedData = data
-        return 'ig_sig_key_version=' + self.SIG_KEY_VERSION + '&signed_body=' + hmac.new(self.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsedData
+    def generate_signature(self, data):
+        parsed_data = urllib.parse.quote(data)
+        return f'ig_sig_key_version={self.SIG_KEY_VERSION}&signed_body=' + hmac.new(self.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsed_data
 
     def generate_device_id(self, seed):
         volatile_seed = "12345"
