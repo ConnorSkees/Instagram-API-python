@@ -19,7 +19,10 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests_toolbelt import MultipartEncoder
 
 from .ImageUtils import getImageSize
-from .exceptions import SentryBlockException
+from .exceptions import (
+    SentryBlockException,
+    NoLoginException
+)
 
 # Turn off InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -1035,8 +1038,9 @@ class InstagramAPI:
     def send_request(self, endpoint: str, post=None, login=False):
         verify = False  # don't show request warning
 
-        if not self.is_logged_in and not login:
-            raise Exception("Not logged in!\n")
+        if not self.is_logged_in:
+            raise NoLoginException("You are not currently logged in. "
+                                   "Try running InstagramAPI.login()")
 
         self.session.headers.update({
             'Connection': 'close',

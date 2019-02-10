@@ -2,3 +2,4 @@
 InstagramApi.egg-info/
 dist/
 .mypy_cache/*
+*.log

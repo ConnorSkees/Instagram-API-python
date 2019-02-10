@@ -7,7 +7,7 @@ class InstagramAPIException(Exception):
     Base Instagram exception
     """
 
-class NotLoggedIn(InstagramAPIException):
+class NoLoginException(InstagramAPIException):
     """
     User is not currently logged in
     """
