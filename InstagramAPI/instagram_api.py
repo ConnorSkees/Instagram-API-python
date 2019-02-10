@@ -23,7 +23,8 @@ from .ImageUtils import getImageSize
 from .exceptions import (
     AlbumLengthError,
     SentryBlockException,
-    NoLoginException
+    NoLoginException,
+    UnsupportedMediaType
 )
 
 # Turn off InsecureRequestWarning
@@ -352,9 +353,9 @@ class InstagramAPI:
                 # $itemInternalMetadata->setVideoDetails(Constants::FEED_TIMELINE_ALBUM, $item['file']);
 
             else:
-                raise Exception(f'Unsupported album media type {item_type}')
-
-            item['internalMetadata'] = {}
+                raise UnsupportedMediaType(
+                    f'Valid media types are {image_types} and {video_types}'
+                )
 
             item_upload_id = self.generate_upload_id()
             if item_type == 'photo':
