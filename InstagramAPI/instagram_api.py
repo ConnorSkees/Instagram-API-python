@@ -11,7 +11,7 @@ import logging
 import math
 import os
 import time
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import urllib.parse
 import uuid
 
@@ -208,7 +208,14 @@ class InstagramAPI:
                 self.expose()
         return False
 
-    def upload_video(self, video, thumbnail, caption=None, upload_id=None, is_sidecar=None):
+    def upload_video(
+            self,
+            path_to_video: str,
+            path_to_thumbnail: str,
+            caption: Optional[str] = None,
+            upload_id: Optional[str] = None,
+            is_sidecar: Optional[bool] = None
+        ):
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
 
@@ -243,7 +250,7 @@ class InstagramAPI:
             upload_url = body['video_upload_urls'][3]['url']
             upload_job = body['video_upload_urls'][3]['job']
 
-            video_data = open(video, 'rb').read()
+            video_data = open(path_to_video, 'rb').read()
             # solve issue #85 TypeError: slice indices must be integers or None or have an __index__ method
             request_size = int(math.floor(len(video_data) / 4))
             last_request_extra = (len(video_data) - (request_size * 3))
@@ -282,7 +289,7 @@ class InstagramAPI:
             self.session.headers = headers
 
             if response.status_code == 200:
-                if self.configure_video(upload_id, video, thumbnail, caption):
+                if self.configure_video(upload_id, path_to_video, path_to_thumbnail, caption):
                     self.expose()
 
         return False
@@ -315,8 +322,6 @@ class InstagramAPI:
             }
         ]
         """
-        raise NotImplementedError("This method is currently unfinished")
-
         image_types = (".jpg", ".jpeg", ".gif", ".png", ".bmp")
         video_types = (".mov", ".mp4")
 
