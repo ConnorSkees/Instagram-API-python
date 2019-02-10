@@ -984,44 +984,44 @@ class InstagramAPI:
     def generate_upload_id(self):
         return str(calendar.timegm(datetime.utcnow().utctimetuple()))
 
-    def create_broadcast(self, previewWidth=1080, previewHeight=1920, broadcastMessage=''):
+    def create_broadcast(self, preview_width=1080, preview_height=1920, broadcast_message=''):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
-            'preview_height': previewHeight,
-            'preview_width': previewWidth,
-            'broadcast_message': broadcastMessage,
+            'preview_height': preview_height,
+            'preview_width': preview_width,
+            'broadcast_message': broadcast_message,
             'broadcast_type': 'RTMP',
             'internal_only': 0,
             '_csrftoken': self.token
         })
         return self.send_request('live/create/', self.generate_signature(data))
 
-    def startBroadcast(self, broadcastId, sendNotification=False):
+    def startBroadcast(self, broadcast_id, send_notification=False):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
-            'should_send_notifications': int(sendNotification),
+            'should_send_notifications': int(send_notification),
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcastId) + '/start', self.generate_signature(data))
+        return self.send_request('live/' + str(broadcast_id) + '/start', self.generate_signature(data))
 
-    def stopBroadcast(self, broadcastId):
+    def stopBroadcast(self, broadcast_id):
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcastId) + '/end_broadcast/', self.generate_signature(data))
+        return self.send_request('live/' + str(broadcast_id) + '/end_broadcast/', self.generate_signature(data))
 
-    def addBroadcastToLive(self, broadcastId):
+    def addBroadcastToLive(self, broadcast_id):
         # broadcast has to be ended first!
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcastId) + '/add_to_post_live/', self.generate_signature(data))
+        return self.send_request('live/' + str(broadcast_id) + '/add_to_post_live/', self.generate_signature(data))
 
     def build_body(self, bodies, boundary):
         body = u''
