@@ -902,8 +902,8 @@ class InstagramAPI:
             'ig_sig_key_version': self.SIG_KEY_VERSION,
             'rank_token': self.rank_token
         }
-        if maxid:
-            query_string['max_id'] = maxid
+        if max_id:
+            query_string['max_id'] = max_id
         url += urllib.parse.urlencode(query_string)
         return self.send_request(url)
 
@@ -1040,8 +1040,8 @@ class InstagramAPI:
         })
         return self.send_request('friendships/show/' + str(user_id) + '/', self.generate_signature(data))
 
-    def get_liked_media(self, maxid=''):
-        return self.send_request('feed/liked/?max_id=' + str(maxid))
+    def get_liked_media(self, max_id=''):
+        return self.send_request('feed/liked/?max_id=' + str(max_id))
 
     def generate_signature(self, data):
         parsed_data = urllib.parse.quote(data)
