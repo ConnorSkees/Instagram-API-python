@@ -389,7 +389,7 @@ class InstagramAPI:
 
     def throw_if_invalid_usertags(self, usertags):
         """
-        Valid usertags (tagging other people in images and videos)
+        Validate usertags (tagging other people in images and videos)
         """
         for user_position in usertags:
             # Verify this usertag entry, ensuring that the entry is format
