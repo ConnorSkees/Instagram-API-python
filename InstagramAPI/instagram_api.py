@@ -714,7 +714,13 @@ class InstagramAPI:
         })
         return self.send_request('media/' + str(media_id) + '/delete/', self.generate_signature(data))
 
-    def change_password(self, new_password):
+    def change_password(self, new_password: str) -> None:
+        """
+        Change account password
+
+        Args:
+            new_password: str New password
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
@@ -728,7 +734,14 @@ class InstagramAPI:
     def explore(self):
         return self.send_request('discover/explore/')
 
-    def comment(self, media_id, comment_text):
+    def comment(self, media_id, comment_text: str) -> None:
+        """
+        Create a comment on a post
+
+        Args:
+            media_id: Post id
+            comment_id: Comment id
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
@@ -737,7 +750,14 @@ class InstagramAPI:
         })
         return self.send_request('media/' + str(media_id) + '/comment/', self.generate_signature(data))
 
-    def delete_comment(self, media_id, comment_id):
+    def delete_comment(self, media_id, comment_id) -> None:
+        """
+        Delete comment from post
+
+        Args:
+            media_id: Post id
+            comment_id: Comment id
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
@@ -750,6 +770,9 @@ class InstagramAPI:
         return False
 
     def remove_profile_picture(self):
+        """
+        Remove profile picture from user
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
@@ -758,6 +781,12 @@ class InstagramAPI:
         return self.send_request('accounts/remove_profile_picture/', self.generate_signature(data))
 
     def set_private_account(self):
+        """
+        Set account to private
+
+        Info about private accounts:
+            https://help.instagram.com/116024195217477
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
@@ -766,6 +795,12 @@ class InstagramAPI:
         return self.send_request('accounts/set_private/', self.generate_signature(data))
 
     def set_public_account(self):
+        """
+        Set account to public
+
+        Info about private accounts:
+            https://help.instagram.com/116024195217477
+        """
         data = json.dumps({
             '_uuid': self.uuid,
             '_uid': self.username_id,
