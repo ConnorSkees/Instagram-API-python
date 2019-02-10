@@ -215,7 +215,7 @@ class InstagramAPI:
             caption: Optional[str] = None,
             upload_id: Optional[str] = None,
             is_sidecar: Optional[bool] = None
-        ):
+        ) -> None:
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
 
@@ -291,8 +291,6 @@ class InstagramAPI:
             if response.status_code == 200:
                 if self.configure_video(upload_id, path_to_video, path_to_thumbnail, caption):
                     self.expose()
-
-        return False
 
     def upload_album(self, media: List[Dict[str, Any]], caption: str = None):
         """
