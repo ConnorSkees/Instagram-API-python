@@ -21,6 +21,7 @@ import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests_toolbelt import MultipartEncoder
 
+from .image_utils import get_image_size
 from .exceptions import (
     AlbumLengthError,
     SentryBlockException,
@@ -399,7 +400,6 @@ class InstagramAPI:
                 # $itemInternalMetadata = $this->ig->internal->upload_video(Constants::FEED_TIMELINE_ALBUM, $item['file'], $itemInternalMetadata);
                 # Attempt to upload the thumbnail, associated with our video's ID.
                 # $itemInternalMetadata->setPhotoUploadResponse($this->ig->internal->upload_photoData(Constants::FEED_TIMELINE_ALBUM, $itemInternalMetadata));
-                pass
 
         album_internal_metadata = {}
         return self.configure_timeline_album(media, album_internal_metadata, caption_text=caption)
@@ -656,7 +656,7 @@ class InstagramAPI:
         return self.send_request('media/configure/?video=1', self.generate_signature(data))
 
     def configure(self, upload_id, photo, caption=''):
-        (w, h) = getImageSize(photo)
+        (w, h) = get_image_size(photo)
         data = json.dumps({
             '_csrftoken': self.token,
             'media_folder': 'Instagram',
