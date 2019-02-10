@@ -106,8 +106,11 @@ class InstagramAPI:
         self.session.proxies.update(proxies)
         logging.info(f"Set proxy to {proxies}")
 
-    def login(self, force: bool = False):
-        if not self.is_logged_in or force:
+    def login(self) -> bool:
+        """
+        Login to Instagram account
+        """
+        if not self.is_logged_in:
             if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(without_dashes=False), None, True):
                 data = {
                     'phone_id': self.generate_UUID(without_dashes=True),
