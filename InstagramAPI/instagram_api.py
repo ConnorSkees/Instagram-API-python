@@ -971,12 +971,11 @@ class InstagramAPI:
         m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
         return 'android-' + m.hexdigest()[:16]
 
-    def generate_UUID(self, type):
+    def generate_UUID(self, without_dashes):
         generated_uuid = str(uuid.uuid4())
-        if type:
+        if without_dashes:
             return generated_uuid
-        else:
-            return generated_uuid.replace('-', '')
+        return generated_uuid.replace('-', '')
 
     def generate_upload_id(self):
         return str(calendar.timegm(datetime.utcnow().utctimetuple()))
