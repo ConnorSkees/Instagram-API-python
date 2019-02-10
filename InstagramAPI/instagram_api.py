@@ -33,6 +33,9 @@ from .exceptions import (
 # Turn off InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
+# https://github.com/PyCQA/pylint/issues/1788#issuecomment-410381475
+# pylint: disable=W1203
+
 try:
     from moviepy.editor import VideoFileClip
 except ImportError:
@@ -81,7 +84,6 @@ class InstagramAPI:
             username: str,
             password: str,
             debug: bool = False,
-            IGDataPath=None
         ) -> None:
 
         m = hashlib.md5()
