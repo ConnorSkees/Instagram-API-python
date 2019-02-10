@@ -1097,20 +1097,20 @@ class InstagramAPI:
         return self.send_request('live/' + str(broadcast_id) + '/add_to_post_live/', self.generate_signature(data))
 
     def build_body(self, bodies, boundary):
-        body = u''
+        body = ''
         for b in bodies:
-            body += u'--{boundary}\r\n'.format(boundary=boundary)
-            body += u'Content-Disposition: {b_type}; name="{b_name}"'.format(b_type=b['type'], b_name=b['name'])
+            body += '--{boundary}\r\n'.format(boundary=boundary)
+            body += 'Content-Disposition: {b_type}; name="{b_name}"'.format(b_type=b['type'], b_name=b['name'])
             _filename = b.get('filename', None)
             _headers = b.get('headers', None)
             if _filename:
                 _filename, ext = os.path.splitext(_filename)
-                _body += u'; filename="pending_media_{uid}.{ext}"'.format(uid=self.generate_upload_id(), ext=ext)
+                _body += '; filename="pending_media_{uid}.{ext}"'.format(uid=self.generate_upload_id(), ext=ext)
             if _headers and isinstance(_headers, list):
                 for h in _headers:
-                    _body += u'\r\n{header}'.format(header=h)
-            body += u'\r\n\r\n{data}\r\n'.format(data=b['data'])
-        body += u'--{boundary}--'.format(boundary=boundary)
+                    _body += '\r\n{header}'.format(header=h)
+            body += '\r\n\r\n{data}\r\n'.format(data=b['data'])
+        body += '--{boundary}--'.format(boundary=boundary)
         return body
 
     def send_request(self,
