@@ -170,6 +170,7 @@ class InstagramAPI:
     def upload_photo(self, photo, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
+
         data = {
             'upload_id': upload_id,
             '_uuid': self.uuid,
@@ -182,9 +183,12 @@ class InstagramAPI:
                 {'Content-Transfer-Encoding': 'binary'}
             )
         }
+
         if is_sidecar:
             data['is_sidecar'] = '1'
+
         m = MultipartEncoder(data, boundary=self.uuid)
+
         self.session.headers.update({
             'X-IG-Capabilities': '3Q4=',
             'X-IG-Connection-Type': 'WIFI',
@@ -195,7 +199,9 @@ class InstagramAPI:
             'Connection': 'close',
             'User-Agent': self.USER_AGENT
         })
+
         response = self.session.post(self.API_URL + "upload/photo/", data=m.to_string())
+
         if response.status_code == 200:
             if self.configure(upload_id, photo, caption):
                 self.expose()
@@ -204,15 +210,19 @@ class InstagramAPI:
     def upload_video(self, video, thumbnail, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
+
         data = {
             'upload_id': upload_id,
             '_csrftoken': self.token,
             'media_type': '2',
             '_uuid': self.uuid
         }
+
         if is_sidecar:
             data['is_sidecar'] = '1'
+
         m = MultipartEncoder(data, boundary=self.uuid)
+
         self.session.headers.update({
             'X-IG-Capabilities': '3Q4=',
             'X-IG-Connection-Type': 'WIFI',
@@ -224,7 +234,9 @@ class InstagramAPI:
             'Connection': 'keep-alive',
             'User-Agent': self.USER_AGENT
         })
+
         response = self.session.post(self.API_URL + "upload/video/", data=m.to_string())
+
         if response.status_code == 200:
             body = json.loads(response.text)
             upload_url = body['video_upload_urls'][3]['url']
@@ -236,6 +248,7 @@ class InstagramAPI:
             last_request_extra = (len(video_data) - (request_size * 3))
 
             headers = copy.deepcopy(self.session.headers)
+
             self.session.headers.update({
                 'X-IG-Capabilities': '3Q4=',
                 'X-IG-Connection-Type': 'WIFI',
@@ -250,6 +263,7 @@ class InstagramAPI:
                 'Host': 'upload.instagram.com',
                 'User-Agent': self.USER_AGENT
             })
+
             for i in range(0, 4):
                 start = i * request_size
                 if i == 3:
@@ -269,6 +283,7 @@ class InstagramAPI:
             if response.status_code == 200:
                 if self.configure_video(upload_id, video, thumbnail, caption):
                     self.expose()
+
         return False
 
     def upload_album(self, media: List[Dict[str, Any]], caption: str = None):
