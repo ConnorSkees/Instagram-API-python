@@ -4,6 +4,7 @@ Utility functions for working with images
 import struct
 import imghdr
 
+from .exceptions import UnsupportedMediaType
 
 def get_image_size(fname):
     with open(path_to_file, 'rb') as fhandle:
@@ -32,5 +33,5 @@ def get_image_size(fname):
             fhandle.seek(1, 1)  # Skip `precision' byte.
             height, width = struct.unpack('>HH', fhandle.read(4))
         else:
-            raise RuntimeError("Unsupported format")
+            raise UnsupportedMediaType("Unsupported format")
         return width, height
