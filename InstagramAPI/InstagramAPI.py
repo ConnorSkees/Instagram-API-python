@@ -159,21 +159,23 @@ class InstagramAPI:
         if is_sidecar:
             data['is_sidecar'] = '1'
         m = MultipartEncoder(data, boundary=self.uuid)
-        self.s.headers.update({'X-IG-Capabilities': '3Q4=',
-                               'X-IG-Connection-Type': 'WIFI',
-                               'Cookie2': '$Version=1',
-                               'Accept-Language': 'en-US',
-                               'Accept-Encoding': 'gzip, deflate',
-                               'Content-type': m.content_type,
-                               'Connection': 'close',
-                               'User-Agent': self.USER_AGENT})
+        self.s.headers.update({
+            'X-IG-Capabilities': '3Q4=',
+            'X-IG-Connection-Type': 'WIFI',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-type': m.content_type,
+            'Connection': 'close',
+            'User-Agent': self.USER_AGENT
+        })
         response = self.s.post(self.API_URL + "upload/photo/", data=m.to_string())
         if response.status_code == 200:
             if self.configure(upload_id, photo, caption):
                 self.expose()
         return False
 
-    def uploadVideo(self, video, thumbnail, caption=None, upload_id=None, is_sidecar=None):
+    def upload_video(self, video, thumbnail, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
             upload_id = str(int(time.time() * 1000))
         data = {'upload_id': upload_id,
@@ -183,15 +185,17 @@ class InstagramAPI:
         if is_sidecar:
             data['is_sidecar'] = '1'
         m = MultipartEncoder(data, boundary=self.uuid)
-        self.s.headers.update({'X-IG-Capabilities': '3Q4=',
-                               'X-IG-Connection-Type': 'WIFI',
-                               'Host': 'i.instagram.com',
-                               'Cookie2': '$Version=1',
-                               'Accept-Language': 'en-US',
-                               'Accept-Encoding': 'gzip, deflate',
-                               'Content-type': m.content_type,
-                               'Connection': 'keep-alive',
-                               'User-Agent': self.USER_AGENT})
+        self.s.headers.update({
+            'X-IG-Capabilities': '3Q4=',
+            'X-IG-Connection-Type': 'WIFI',
+            'Host': 'i.instagram.com',
+            'Cookie2': '$Version=1',
+            'Accept-Language': 'en-US',
+            'Accept-Encoding': 'gzip, deflate',
+            'Content-type': m.content_type,
+            'Connection': 'keep-alive',
+            'User-Agent': self.USER_AGENT
+        })
         response = self.s.post(self.API_URL + "upload/video/", data=m.to_string())
         if response.status_code == 200:
             body = json.loads(response.text)
@@ -332,18 +336,21 @@ class InstagramAPI:
             uploadId = itemInternalMetadata.get('upload_id', self.generateUploadId())
             if item.get('type', '') == 'photo':
                 # Build this item's configuration.
-                photoConfig = {'date_time_original': date,
-                               'scene_type': 1,
-                               'disable_comments': False,
-                               'upload_id': uploadId,
-                               'source_type': 0,
-                               'scene_capture_type': 'standard',
-                               'date_time_digitized': date,
-                               'geotag_enabled': False,
-                               'camera_position': 'back',
-                               'edits': {'filter_strength': 1,
-                                         'filter_name': 'IGNormalFilter'}
-                               }
+                photoConfig = {
+                    'date_time_original': date,
+                    'scene_type': 1,
+                    'disable_comments': False,
+                    'upload_id': uploadId,
+                    'source_type': 0,
+                    'scene_capture_type': 'standard',
+                    'date_time_digitized': date,
+                    'geotag_enabled': False,
+                    'camera_position': 'back',
+                    'edits': {
+                        'filter_strength': 1,
+                        'filter_name': 'IGNormalFilter'
+                    }
+                }
                 # This usertag per-file EXTERNAL metadata is only supported for PHOTOS!
                 if item.get('usertags', []):
                     # NOTE: These usertags were validated in Timeline::uploadAlbum.
@@ -354,33 +361,37 @@ class InstagramAPI:
                 # Get all of the INTERNAL per-VIDEO metadata.
                 videoDetails = itemInternalMetadata.get('video_details', {})
                 # Build this item's configuration.
-                videoConfig = {'length': videoDetails.get('duration', 1.0),
-                               'date_time_original': date,
-                               'scene_type': 1,
-                               'poster_frame_index': 0,
-                               'trim_type': 0,
-                               'disable_comments': False,
-                               'upload_id': uploadId,
-                               'source_type': 'library',
-                               'geotag_enabled': False,
-                               'edits': {
-                                   'length': videoDetails.get('duration', 1.0),
-                                   'cinema': 'unsupported',
-                                   'original_length': videoDetails.get('duration', 1.0),
-                                   'source_type': 'library',
-                                   'start_time': 0,
-                                   'camera_position': 'unknown',
-                                   'trim_type': 0}
-                               }
+                videoConfig = {
+                    'length': videoDetails.get('duration', 1.0),
+                    'date_time_original': date,
+                    'scene_type': 1,
+                    'poster_frame_index': 0,
+                    'trim_type': 0,
+                    'disable_comments': False,
+                    'upload_id': uploadId,
+                    'source_type': 'library',
+                    'geotag_enabled': False,
+                    'edits': {
+                        'length': videoDetails.get('duration', 1.0),
+                        'cinema': 'unsupported',
+                        'original_length': videoDetails.get('duration', 1.0),
+                        'source_type': 'library',
+                        'start_time': 0,
+                        'camera_position': 'unknown',
+                        'trim_type': 0
+                    }
+                }
 
                 childrenMetadata.append(videoConfig)
         # Build the request...
-        data = {'_csrftoken': self.token,
-                '_uid': self.username_id,
-                '_uuid': self.uuid,
-                'client_sidecar_id': albumUploadId,
-                'caption': captionText,
-                'children_metadata': childrenMetadata}
+        data = {
+            '_csrftoken': self.token,
+            '_uid': self.username_id,
+            '_uuid': self.uuid,
+            'client_sidecar_id': albumUploadId,
+            'caption': captionText,
+            'children_metadata': childrenMetadata
+        }
         self.SendRequest(endpoint, self.generateSignature(json.dumps(data)))
         response = self.LastResponse
         if response.status_code == 200:
@@ -426,16 +437,14 @@ class InstagramAPI:
             },
         ]
         data = self.buildBody(bodies,boundary)
-        self.s.headers.update (
-            {
-                'User-Agent' : self.USER_AGENT,
-                'Proxy-Connection' : 'keep-alive',
-                'Connection': 'keep-alive',
-                'Accept': '*/*',
-                'Content-Type': 'multipart/form-data; boundary={}'.format(boundary),
-                'Accept-Language': 'en-en',
-            }
-        )
+        self.s.headers.update ({
+            'User-Agent' : self.USER_AGENT,
+            'Proxy-Connection' : 'keep-alive',
+            'Connection': 'keep-alive',
+            'Accept': '*/*',
+            'Content-Type': 'multipart/form-data; boundary={}'.format(boundary),
+            'Accept-Language': 'en-en',
+        })
         #self.SendRequest(endpoint,post=data) #overwrites 'Content-type' header and boundary is missed
         response = self.s.post(self.API_URL + endpoint, data=data)
 
@@ -487,12 +496,14 @@ class InstagramAPI:
             },
         ]
         data = self.buildBody(bodies, boundary)
-        self.s.headers.update({'User-Agent': self.USER_AGENT,
-                               'Proxy-Connection': 'keep-alive',
-                               'Connection': 'keep-alive',
-                               'Accept': '*/*',
-                               'Content-Type': 'multipart/form-data; boundary={}'.format(boundary),
-                               'Accept-Language': 'en-en'})
+        self.s.headers.update({
+            'User-Agent': self.USER_AGENT,
+            'Proxy-Connection': 'keep-alive',
+            'Connection': 'keep-alive',
+            'Accept': '*/*',
+            'Content-Type': 'multipart/form-data; boundary={}'.format(boundary),
+            'Accept-Language': 'en-en'
+        })
         # self.SendRequest(endpoint,post=data) #overwrites 'Content-type' header and boundary is missed
         response = self.s.post(self.API_URL + endpoint, data=data)
 
@@ -540,76 +551,92 @@ class InstagramAPI:
 
     def configure(self, upload_id, photo, caption=''):
         (w, h) = getImageSize(photo)
-        data = json.dumps({'_csrftoken': self.token,
-                           'media_folder': 'Instagram',
-                           'source_type': 4,
-                           '_uid': self.username_id,
-                           '_uuid': self.uuid,
-                           'caption': caption,
-                           'upload_id': upload_id,
-                           'device': self.DEVICE_SETTINGS,
-                           'edits': {
-                               'crop_original_size': [w * 1.0, h * 1.0],
-                               'crop_center': [0.0, 0.0],
-                               'crop_zoom': 1.0
-                           },
-                           'extra': {
-                               'source_width': w,
-                               'source_height': h
-                           }})
+        data = json.dumps({
+            '_csrftoken': self.token,
+            'media_folder': 'Instagram',
+            'source_type': 4,
+            '_uid': self.username_id,
+            '_uuid': self.uuid,
+            'caption': caption,
+            'upload_id': upload_id,
+            'device': self.DEVICE_SETTINGS,
+            'edits': {
+                'crop_original_size': [w * 1.0, h * 1.0],
+                'crop_center': [0.0, 0.0],
+                'crop_zoom': 1.0
+            },
+            'extra': {
+                'source_width': w,
+                'source_height': h
+            }
+        })
         return self.SendRequest('media/configure/?', self.generateSignature(data))
 
     def editMedia(self, mediaId, captionText=''):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'caption_text': captionText})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'caption_text': captionText
+        })
         return self.SendRequest('media/' + str(mediaId) + '/edit_media/', self.generateSignature(data))
 
     def removeSelftag(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('media/' + str(mediaId) + '/remove/', self.generateSignature(data))
 
     def mediaInfo(self, mediaId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/info/', self.generateSignature(data))
 
     def deleteMedia(self, mediaId, media_type=1):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'media_type': media_type,
-                           'media_id': mediaId})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'media_type': media_type,
+            'media_id': mediaId
+        })
         return self.SendRequest('media/' + str(mediaId) + '/delete/', self.generateSignature(data))
 
     def changePassword(self, newPassword):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'old_password': self.password,
-                           'new_password1': newPassword,
-                           'new_password2': newPassword})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'old_password': self.password,
+            'new_password1': newPassword,
+            'new_password2': newPassword
+        })
         return self.SendRequest('accounts/change_password/', self.generateSignature(data))
 
     def explore(self):
         return self.SendRequest('discover/explore/')
 
     def comment(self, mediaId, commentText):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'comment_text': commentText})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'comment_text': commentText
+        })
         return self.SendRequest('media/' + str(mediaId) + '/comment/', self.generateSignature(data))
 
     def deleteComment(self, mediaId, commentId):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('media/' + str(mediaId) + '/comment/' + str(commentId) + '/delete/', self.generateSignature(data))
 
     def changeProfilePicture(self, photo):
@@ -617,40 +644,50 @@ class InstagramAPI:
         return False
 
     def removeProfilePicture(self):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('accounts/remove_profile_picture/', self.generateSignature(data))
 
     def setPrivateAccount(self):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('accounts/set_private/', self.generateSignature(data))
 
     def setPublicAccount(self):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('accounts/set_public/', self.generateSignature(data))
 
     def getProfileData(self):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token
+        })
         return self.SendRequest('accounts/current_user/?edit=true', self.generateSignature(data))
 
     def editProfile(self, url, phone, first_name, biography, email, gender):
-        data = json.dumps({'_uuid': self.uuid,
-                           '_uid': self.username_id,
-                           '_csrftoken': self.token,
-                           'external_url': url,
-                           'phone_number': phone,
-                           'username': self.username,
-                           'full_name': first_name,
-                           'biography': biography,
-                           'email': email,
-                           'gender': gender})
+        data = json.dumps({
+            '_uuid': self.uuid,
+            '_uid': self.username_id,
+            '_csrftoken': self.token,
+            'external_url': url,
+            'phone_number': phone,
+            'username': self.username,
+            'full_name': first_name,
+            'biography': biography,
+            'email': email,
+            'gender': gender
+        })
         return self.SendRequest('accounts/edit_profile/', self.generateSignature(data))
 
     def getStory(self, usernameId):
