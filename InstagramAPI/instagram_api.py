@@ -75,13 +75,11 @@ class InstagramAPI:
     # token               # _csrftoken
     # is_logged_in          # Session status
     # rank_token          # Rank token
-    # IGDataPath          # Data storage path
 
     def __init__(
             self,
             username: str,
             password: str,
-            debug: bool = False,
         ) -> None:
 
         m = hashlib.md5()
@@ -172,7 +170,7 @@ class InstagramAPI:
         """
         Logout of Instagram account
         """
-        logout = self.send_request('accounts/logout/')
+        self.send_request('accounts/logout/')
 
     def upload_photo(self, photo, caption=None, upload_id=None, is_sidecar=None):
         if upload_id is None:
@@ -438,7 +436,7 @@ class InstagramAPI:
             if not correct:
                 raise Exception('Invalid user entry in usertags array.')
 
-    def configure_timeline_album(self, media, albumInternalMetadata, caption_text='', location=None):
+    def configure_timeline_album(self, media, caption_text=''):
         endpoint = 'media/configure_sidecar/'
         albumUploadId = self.generate_upload_id()
 
