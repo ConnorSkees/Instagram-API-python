@@ -3,7 +3,6 @@
 Instagram API bindings written in python 3
 """
 
-
 import calendar
 import copy
 from datetime import datetime
@@ -70,7 +69,6 @@ class InstagramAPI:
 
     # username            # Instagram username
     # password            # Instagram password
-    # debug               # Debug
     # uuid                # UUID
     # device_id           # Device ID
     # username_id         # Username ID
