@@ -555,15 +555,15 @@ class InstagramAPI:
             self.last_response = response
             self.last_json = json.loads(response.text)
             return True
-        else:
-            print ("Request return " + str(response.status_code) + " error!")
-            # for debugging
-            try:
-                self.last_response = response
-                self.last_json = json.loads(response.text)
-            except:
-                pass
-            return False
+
+        print ("Request return " + str(response.status_code) + " error!")
+        # for debugging
+        try:
+            self.last_response = response
+            self.last_json = json.loads(response.text)
+        except:
+            pass
+        return False
 
     def direct_share(self, media_id, recipients, text=None):
         if not isinstance(position, list):
