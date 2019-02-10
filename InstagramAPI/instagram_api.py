@@ -322,12 +322,11 @@ class InstagramAPI:
         image_types = (".jpg", ".jpeg", ".gif", ".png", ".bmp")
         video_types = (".mov", ".mp4")
 
-        if not media:
-            raise Exception("List of media to upload can't be empty.")
-
-        if len(media) < 2 or len(media) > 10:
-            raise Exception('Instagram requires that albums contain 2-10 items.'
-                            f' You tried to submit {len(media)}.')
+        if not 2 < len(media) < 10:
+            raise AlbumLengthError(
+                'Instagram requires that albums contain 2-10 items. '
+                f'You tried to submit {len(media)}.'
+            )
 
         for idx, item in enumerate(media):
             item_type = item.get('type', None)
