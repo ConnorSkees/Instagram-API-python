@@ -1083,12 +1083,12 @@ class InstagramAPI:
 
     def generate_signature(self, data):
         parsed_data = urllib.parse.quote(data)
-        return f'ig_sig_key_version={self.SIG_KEY_VERSION}&signed_body=' + hmac.new(self.IG_SIG_KEY.encode('utf-8'), data.encode('utf-8'), hashlib.sha256).hexdigest() + '.' + parsed_data
+        return f'ig_sig_key_version={self.SIG_KEY_VERSION}&signed_body=' + hmac.new(self.IG_SIG_KEY, data, hashlib.sha256).hexdigest() + '.' + parsed_data
 
     def generate_device_id(self, seed):
         volatile_seed = "12345"
         m = hashlib.md5()
-        m.update(seed.encode('utf-8') + volatile_seed.encode('utf-8'))
+        m.update(seed + volatile_seed)
         return 'android-' + m.hexdigest()[:16]
 
     def generate_UUID(self, without_dashes):
