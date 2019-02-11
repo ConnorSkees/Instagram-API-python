@@ -618,7 +618,7 @@ class InstagramAPI:
             self.last_json = json.loads(response.text)
             return True
         else:
-            print("Request return " + str(response.status_code) + " error!")
+            print(f"Request return {response.status_code} error!")
             # for debugging
             try:
                 self.last_response = response
@@ -685,7 +685,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'caption_text': caption_text
         })
-        return self.send_request('media/' + str(media_id) + '/edit_media/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/edit_media/', self.generate_signature(data))
 
     def remove_self_tag(self, media_id):
         data = json.dumps({
@@ -693,7 +693,7 @@ class InstagramAPI:
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('media/' + str(media_id) + '/remove/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/remove/', self.generate_signature(data))
 
     def media_info(self, media_id):
         data = json.dumps({
@@ -702,7 +702,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/info/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/info/', self.generate_signature(data))
 
     def delete_media(self, media_id, media_type=1):
         data = json.dumps({
@@ -712,7 +712,7 @@ class InstagramAPI:
             'media_type': media_type,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/delete/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/delete/', self.generate_signature(data))
 
     def change_password(self, new_password: str) -> None:
         """
@@ -748,7 +748,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'comment_text': comment_text
         })
-        return self.send_request('media/' + str(media_id) + '/comment/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/comment/', self.generate_signature(data))
 
     def delete_comment(self, media_id, comment_id) -> None:
         """
@@ -763,7 +763,7 @@ class InstagramAPI:
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('media/' + str(media_id) + '/comment/' + str(comment_id) + '/delete/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/comment/{comment_id}/delete/', self.generate_signature(data))
 
     def change_profile_picture(self, photo):
         # TODO Instagram.php 705-775
@@ -832,7 +832,7 @@ class InstagramAPI:
         return self.send_request('accounts/edit_profile/', self.generate_signature(data))
 
     def get_story(self, username_id):
-        return self.send_request('feed/user/' + str(username_id) + '/reel_media/')
+        return self.send_request(f'feed/user/{username_id}/reel_media/')
 
     def get_username_info(self, username_id):
         return self.send_request('users/' + str(username_id) + '/info/')
@@ -885,25 +885,25 @@ class InstagramAPI:
         return self.get_geo_media(self.username_id)
 
     def fb_user_search(self, query):
-        query = self.send_request('fbsearch/topsearch/?context=blended&query=' + str(query) + '&rank_token=' + str(self.rank_token))
+        query = self.send_request(f'fbsearch/topsearch/?context=blended&query={query}&rank_token={self.rank_token}')
         return query
 
     def search_users(self, query):
-        query = self.send_request('users/search/?ig_sig_key_version=' + str(self.SIG_KEY_VERSION) + '&is_typeahead=true&query=' + str(query) + '&rank_token=' + str(self.rank_token))
+        query = self.send_request(f'users/search/?ig_sig_key_version={self.SIG_KEY_VERSION}&is_typeahead=true&query={query}&rank_token={self.rank_token}')
         return query
 
-    def search_username(self, username):
-        return self.send_request(f'users/{str(username)}/usernameinfo/')
+    def search_username(self, username: str):
+        return self.send_request(f'users/{username}/usernameinfo/')
 
     def sync_from_adress_book(self, contacts):
         return self.send_request('address_book/link/?include=extra_display_name,thumbnails', "contacts=" + json.dumps(contacts))
 
     def search_tags(self, query):
-        query = self.send_request('tags/search/?is_typeahead=true&q=' + str(query) + '&rank_token=' + str(self.rank_token))
+        query = self.send_request(f'tags/search/?is_typeahead=true&q={query}&rank_token={self.rank_token}')
         return query
 
     def get_timeline(self):
-        query = self.send_request('feed/timeline/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        query = self.send_request(f'feed/timeline/?rank_token={self.rank_token}&ranked_content=true&')
         return query
 
     def get_user_feed(self, username_id, max_id='', min_timestamp=None):
@@ -975,7 +975,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/unlike/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/unlike/', self.generate_signature(data))
 
     def save(self, media_id):
         data = json.dumps({
@@ -984,7 +984,7 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/save/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/save/', self.generate_signature(data))
 
     def unsave(self, media_id):
         data = json.dumps({
@@ -993,10 +993,10 @@ class InstagramAPI:
             '_csrftoken': self.token,
             'media_id': media_id
         })
-        return self.send_request('media/' + str(media_id) + '/unsave/', self.generate_signature(data))
+        return self.send_request(f'media/{media_id}/unsave/', self.generate_signature(data))
 
     def get_media_comments(self, media_id, max_id=''):
-        return self.send_request('media/' + media_id + '/comments/?max_id=' + max_id)
+        return self.send_request(f'media/{media_id}/comments/?max_id={max_id}')
 
     def set_name_and_phone(self, name='', phone=''):
         data = json.dumps({
@@ -1022,7 +1022,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/approve/'+ str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/approve/{user_id}/', self.generate_signature(data))
 
     def ignore(self, user_id):
         data = json.dumps({
@@ -1031,7 +1031,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/ignore/'+ str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/ignore/{user_id}/', self.generate_signature(data))
 
     def follow(self, user_id):
         data = json.dumps({
@@ -1040,7 +1040,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/create/' + str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/create/{user_id}/', self.generate_signature(data))
 
     def unfollow(self, user_id):
         data = json.dumps({
@@ -1049,7 +1049,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/destroy/' + str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/destroy/{user_id}/', self.generate_signature(data))
 
     def block(self, user_id):
         data = json.dumps({
@@ -1058,7 +1058,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/block/' + str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/block/{user_id}/', self.generate_signature(data))
 
     def unblock(self, user_id):
         data = json.dumps({
@@ -1067,7 +1067,7 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/unblock/' + str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/unblock/{user_id}/', self.generate_signature(data))
 
     def user_friendship(self, user_id):
         data = json.dumps({
@@ -1076,10 +1076,10 @@ class InstagramAPI:
             'user_id': user_id,
             '_csrftoken': self.token
         })
-        return self.send_request('friendships/show/' + str(user_id) + '/', self.generate_signature(data))
+        return self.send_request(f'friendships/show/{user_id}/', self.generate_signature(data))
 
     def get_liked_media(self, max_id=''):
-        return self.send_request('feed/liked/?max_id=' + str(max_id))
+        return self.send_request(f'feed/liked/?max_id={max_id}')
 
     def generate_signature(self, data):
         parsed_data = urllib.parse.quote(data)
