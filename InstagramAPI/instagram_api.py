@@ -92,7 +92,7 @@ class InstagramAPI:
 
         self.username = username
         self.password = password
-        self.uuid = self.generate_UUID(without_dashes=True)
+        self.uuid = self.generate_UUID(with_dashes=True)
 
     def set_proxy(self, proxy: str) -> None:
         """
@@ -112,9 +112,9 @@ class InstagramAPI:
         Login to Instagram account
         """
         if not self.is_logged_in:
-            if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(without_dashes=False), None, True):
+            if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(with_dashes=False), None, True):
                 data = {
-                    'phone_id': self.generate_UUID(without_dashes=True),
+                    'phone_id': self.generate_UUID(with_dashes=True),
                     '_csrftoken': self.last_response.cookies['csrftoken'],
                     'username': self.username,
                     'guid': self.uuid,
@@ -1091,9 +1091,9 @@ class InstagramAPI:
         m.update(seed + volatile_seed)
         return 'android-' + m.hexdigest()[:16]
 
-    def generate_UUID(self, without_dashes):
+    def generate_UUID(self, with_dashes):
         generated_uuid = str(uuid.uuid4())
-        if without_dashes:
+        if with_dashes:
             return generated_uuid
         return generated_uuid.replace('-', '')
 
