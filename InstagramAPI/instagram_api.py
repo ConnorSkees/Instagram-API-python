@@ -112,7 +112,7 @@ class InstagramAPI:
         Login to Instagram account
         """
         if not self.is_logged_in:
-            if self.send_request('si/fetch_headers/?challenge_type=signup&guid=' + self.generate_UUID(with_dashes=False), None, True):
+            if self.send_request(f'si/fetch_headers/?challenge_type=signup&guid={self.generate_UUID(with_dashes=False)}', None, True):
                 data = {
                     'phone_id': self.generate_UUID(with_dashes=True),
                     '_csrftoken': self.last_response.cookies['csrftoken'],
@@ -508,7 +508,7 @@ class InstagramAPI:
             self.last_response = response
             self.last_json = json.loads(response.text)
             return True
-        print("Request return " + str(response.status_code) + " error!")
+        print(f"Request return {response.status_code} error!")
         # for debugging
         self.last_response = response
         self.last_json = json.loads(response.text)
@@ -559,7 +559,7 @@ class InstagramAPI:
             self.last_json = json.loads(response.text)
             return True
 
-        print ("Request return " + str(response.status_code) + " error!")
+        print (f"Request return {response.status_code} error!")
         # for debugging
         try:
             self.last_response = response
@@ -835,7 +835,7 @@ class InstagramAPI:
         return self.send_request(f'feed/user/{username_id}/reel_media/')
 
     def get_username_info(self, username_id):
-        return self.send_request('users/' + str(username_id) + '/info/')
+        return self.send_request(f'users/{username_id}/info/')
 
     def get_self_username_info(self):
         return self.get_username_info(self.username_id)
@@ -863,22 +863,22 @@ class InstagramAPI:
         return inbox
 
     def get_user_tags(self, username_id):
-        tags = self.send_request('usertags/' + str(username_id) + '/feed/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        tags = self.send_request(f'usertags/{username_id}/feed/?rank_token={self.rank_token}&ranked_content=true&')
         return tags
 
     def get_self_user_tags(self):
         return self.get_user_tags(self.username_id)
 
     def tag_feed(self, tag):
-        user_feed = self.send_request('feed/tag/' + str(tag) + '/?rank_token=' + str(self.rank_token) + '&ranked_content=true&')
+        user_feed = self.send_request(f'feed/tag/{tag}/?rank_token={self.rank_token}&ranked_content=true&')
         return user_feed
 
     def get_media_likers(self, media_id):
-        likers = self.send_request('media/' + str(media_id) + '/likers/?')
+        likers = self.send_request(f'media/{media_id}/likers/?')
         return likers
 
     def get_geo_media(self, username_id):
-        locations = self.send_request('maps/user/' + str(username_id) + '/')
+        locations = self.send_request(f'maps/user/{username_id}/')
         return locations
 
     def get_self_geo_media(self):
@@ -1120,7 +1120,7 @@ class InstagramAPI:
             'should_send_notifications': int(send_notification),
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcast_id) + '/start', self.generate_signature(data))
+        return self.send_request(f'live/{broadcast_id}/start', self.generate_signature(data))
 
     def stop_broadcast(self, broadcast_id):
         data = json.dumps({
@@ -1128,7 +1128,7 @@ class InstagramAPI:
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcast_id) + '/end_broadcast/', self.generate_signature(data))
+        return self.send_request(f'live/{broadcast_id}/end_broadcast/', self.generate_signature(data))
 
     def add_broadcast_to_live(self, broadcast_id):
         # broadcast has to be ended first!
@@ -1137,7 +1137,7 @@ class InstagramAPI:
             '_uid': self.username_id,
             '_csrftoken': self.token
         })
-        return self.send_request('live/' + str(broadcast_id) + '/add_to_post_live/', self.generate_signature(data))
+        return self.send_request(f'live/{broadcast_id}/add_to_post_live/', self.generate_signature(data))
 
     def build_body(self, bodies, boundary):
         body = ''
@@ -1182,7 +1182,7 @@ class InstagramAPI:
                 else:
                     response = self.session.get(self.API_URL + endpoint, verify=verify)
             except Exception as e:
-                print('Except on send_request (wait 60 sec and resend): ' + str(e))
+                print(f'Except on send_request (wait 60 sec and resend): {e}')
                 time.sleep(60)
             else:
                 break
@@ -1192,7 +1192,7 @@ class InstagramAPI:
             self.last_json = json.loads(response.text)
             return True
 
-        print("Request return " + str(response.status_code) + " error!")
+        print(f"Request return {response.status_code} error!")
         # for debugging
         try:
             self.last_response = response
