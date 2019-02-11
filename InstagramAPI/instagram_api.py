@@ -83,7 +83,7 @@ class InstagramAPI:
         ) -> None:
 
         m = hashlib.md5()
-        m.update(username.encode('utf-8') + password.encode('utf-8'))
+        m.update(username + password)
         self.device_id = self.generate_device_id(m.hexdigest())
 
         self.is_logged_in = False
@@ -205,7 +205,7 @@ class InstagramAPI:
             'User-Agent': self.USER_AGENT
         })
 
-        response = self.session.post(self.API_URL + "upload/photo/", data=m.to_string())
+        response = self.session.post(f"{self.API_URL}upload/photo/", data=m.to_string())
 
         if response.status_code == 200:
             if self.configure(upload_id, photo, caption):
@@ -258,7 +258,7 @@ class InstagramAPI:
             'User-Agent': self.USER_AGENT
         })
 
-        response = self.session.post(self.API_URL + "upload/video/", data=m.to_string())
+        response = self.session.post(f"{self.API_URL}upload/video/", data=m.to_string())
 
         if response.status_code == 200:
             body = json.loads(response.text)
