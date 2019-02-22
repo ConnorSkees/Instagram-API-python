@@ -12,7 +12,7 @@ The new fake Instagram account with an unverified phone number after ~ 1-24 hour
 
 1. Fork/Clone/Download this repo
 
-    `git clone https://github.com/LevPasha/Instagram-API-python.git`
+    `git clone https://github.com/ConnorSkees/Instagram-API-python`
 
 
 2. Navigate to the directory
